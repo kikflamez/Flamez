@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: #181818;
+            color: white;
+        }
+
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: #181818;
+        }
+
+        /* Forex Calculator Container */
+        .calculator-container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background-color: #333;
+            color: white;
+        }
+
+        body.light-mode .calculator-container {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .calculator-container h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #444;
+            color: white;
+        }
+
+        body.light-mode .form-group input, 
+        body.light-mode .form-group select {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border: 1px solid #007bff;
+        }
+
+        /* Toggle Button Container */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .toggle-label {
+            font-size: 16px;
+            margin: 0 5px; /* Bring words closer to the toggle */
+        }
+
+        /* Pips/Points Toggle Button Styles */
+        .toggle-switch {
+            width: 60px;
+            height: 30px;
+            border-radius: 30px;
+            background: #007bff; /* Blue for Pips/Points toggle */
+            position: relative;
+            cursor: pointer;
+            margin: 0 5px; /* Close to the label */
+        }
+
+        .toggle-switch .toggle-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        /* Toggle States */
+        .toggle-switch.active .toggle-circle {
+            left: 32px;
+        }
+
+        .toggle-switch.active {
+            background: #4caf50; /* Active color for Points */
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 20px;
+        }
+
+        .dark-mode-switch {
+            width: 60px;
+            height: 30px;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #FFD700, #808080);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .dark-mode-switch .toggle-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        /* Dark Mode Toggle Active */
+        .dark-mode-switch.active .toggle-circle {
+            left: 32px;
+        }
+
+        .dark-mode-switch.active {
+            background: linear-gradient(90deg, #808080, #FFD700);
+        }
+
+        /* Calculate Button */
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff; /* Default color for Calculate button */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .calculate-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Green color for Points calculation */
+        .calculate-btn.green {
+            background-color: #4caf50;
+        }
+
+        .calculate-btn.green:hover {
+            background-color: #388e3c;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- Dark Mode Toggle Button -->
+    <div class="dark-mode-toggle">
+        <div class="dark-mode-switch" id="mode-toggle">
+            <div class="toggle-circle"></div>
+        </div>
+    </div>
+
+    <div class="calculator-container">
+        <h1>Forex Calculator</h1>
+
+        <!-- Pips/Points Toggle -->
+        <div class="toggle-container">
+            <span class="toggle-label">Pips</span>
+            <div class="toggle-switch" id="pips-points-toggle">
+                <div class="toggle-circle"></div>
+            </div>
+            <span class="toggle-label">Points</span>
+        </div>
+
+        <!-- Forex Calculator Form -->
+        <div class="form-group">
+            <label for="account-balance">Account Balance</label>
+            <input type="number" id="account-balance" placeholder="Enter account balance" value="1000">
+        </div>
+
+        <div class="form-group">
+            <label for="risk-percentage">Risk Percentage</label>
+            <input type="number" id="risk-percentage" placeholder="Enter risk percentage" value="1">
+        </div>
+
+        <div class="form-group">
+            <label for="stop-loss">SL Pips/Points</label>
+            <input type="number" id="stop-loss" placeholder="Enter SL Pips/Points" value="10">
+        </div>
+
+        <div class="form-group">
+            <label for="reward-ratio">Risk to Reward Ratio</label>
+            <input type="number" id="reward-ratio" placeholder="Enter Risk to Reward Ratio" value="2">
+        </div>
+
+        <div class="form-group">
+            <label for="currency-pair">Currency</label>
+            <select id="currency-pair" style="width: calc(100% - 20px);">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="JPY">JPY</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="risk-output">Risk</label>
+            <input type="text" id="risk-output" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="lots-output">Lots</label>
+            <input type="text" id="lots-output" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="reward-output">Reward</label>
+            <input type="text" id="reward-output" readonly>
+        </div>
+
+        <button class="calculate-btn" id="calculate-btn">CALCULATE</button>
+    </div>
+
+    <script>
+        // Toggle Functionality
+        const pipsPointsToggle = document.getElementById('pips-points-toggle');
+        const modeToggle = document.getElementById('mode-toggle');
+        const calculateBtn = document.getElementById('calculate-btn');
+
+        const accountBalance = document.getElementById('account-balance');
+        const riskPercentage = document.getElementById('risk-percentage');
+        const stopLoss = document.getElementById('stop-loss');
+        const rewardRatio = document.getElementById('reward-ratio');
+
+        const riskOutput = document.getElementById('risk-output');
+        const lotsOutput = document.getElementById('lots-output');
+        const rewardOutput = document.getElementById('reward-output');
+
+        let isPointsMode = false;
+
+        // Pips/Points Toggle Switch
+        pipsPointsToggle.addEventListener('click', function () {
+            this.classList.toggle('active');
+            isPointsMode = !isPointsMode; // Toggle between Pips and Points
+            
+            // Change Calculate button color based on mode
+            if (isPointsMode) {
+                calculateBtn.classList.add('green');
+            } else {
+                calculateBtn.classList.remove('green');
+            }
+        });
+
+        // Dark Mode Toggle
+        modeToggle.addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+            modeToggle.classList.toggle('active');
+        });
+
+        // Calculate Button
+        calculateBtn.addEventListener('click', function () {
+            const balance = parseFloat(accountBalance.value);
+            const riskPerc = parseFloat(riskPercentage.value) / 100; // Convert percentage to decimal
+            const sl = parseFloat(stopLoss.value);
+            const rrRatio = parseFloat(rewardRatio.value); // Risk to Reward Ratio
+
+            // Calculate Risk
+            const riskAmount = balance * riskPerc;
+            riskOutput.value = riskAmount.toFixed(2); // Risk
+
+            // Calculate Lot Size
+            let pointValue;
+            let lotSize;
+
+            if (!isPointsMode) {
+                // Pips calculation
+                pointValue = 10; // Assuming 1 pip = $10 for standard lot
+                lotSize = (riskAmount / (sl * pointValue)).toFixed(2);
+            } else {
+                // Points calculation
+                pointValue = 1; // Assuming 1 point = $1 for indices
+                lotSize = (riskAmount / (sl * pointValue)).toFixed(2);
+            }
+
+            lotsOutput.value = lotSize; // Lots
+
+            // Calculate Reward
+            const potentialReward = (riskAmount * rrRatio).toFixed(2); // Reward
+            rewardOutput.value = potentialReward; // Reward
+        });
+    </script>
+</body>
+</html>
